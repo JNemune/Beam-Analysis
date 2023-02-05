@@ -202,22 +202,27 @@ class Beam(object):
 
     def bending_plot(self):
         """
-        return plt of V(x) and M(x)
+        return fig of V(x) and M(x)
         """
         fig, ax = plt.subplots(2, 1)
         ax[0].set(title="Shear Force and Bending Moment", ylabel="V")
         ax[1].set(xlabel="x", ylabel="M")
         ax[0].plot(
-            np.linspace(0, self.__lenght, 100),
-            [self.__v.subs(self.__x, i) for i in np.linspace(0, self.__lenght, 100)],
+            np.linspace(0, self.__lenght * 0.99, 100),
+            [
+                self.__v.subs(self.__x, i)
+                for i in np.linspace(0, self.__lenght * 0.99, 100)
+            ],
         )
         ax[1].plot(
-            np.linspace(0, self.__lenght, 100),
-            [self.__Mz.subs(self.__x, i) for i in np.linspace(0, self.__lenght, 100)],
+            np.linspace(0, self.__lenght * 0.99, 100),
+            [
+                self.__Mz.subs(self.__x, i)
+                for i in np.linspace(0, self.__lenght * 0.99, 100)
+            ],
         )
-        return plt
+        return fig
 
 
 if __name__ == "__main__":
     pass
- 
