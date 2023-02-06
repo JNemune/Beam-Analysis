@@ -243,6 +243,49 @@ class Beam(object):
             self.__v * self.__WT * self.__ybar**2 / 2 / self.__Iyy / self.__WT
         )
 
+    def loadings(self):
+        """
+        return all loading entries in plot
+        """
+        fig1, ax1 = plt.subplots(2, 1)
+        fig2, ax2 = plt.subplots(2, 1)
+
+        ax1[0].set(title="Moment Loadings", ylabel=r"$M_{x}$")
+        ax1[1].set(xlabel=r"$x$", ylabel=r"$M_{z}$")
+        ax2[0].set(title="Force Loadings", ylabel=r"$F_{x}$")
+        ax2[1].set(xlabel=r"$x$", ylabel=r"$F_{y}$")
+        for i in self.__mloads:
+            if i["x1"] == i["x2"]:
+                ax1[0].vlines(i["x1"], 0, i["x"], color="red")
+                ax1[1].vlines(i["x1"], 0, i["z"], color="orange")
+            else:
+                ax1[0].plot(
+                    np.linspace(i["x1"], i["x2"]),
+                    [i["x"].subs(self.__x, j) for j in np.linspace(i["x1"], i["x2"])],
+                    color="red",
+                )
+                ax1[1].plot(
+                    np.linspace(i["x1"], i["x2"]),
+                    [i["z"].subs(self.__x, j) for j in np.linspace(i["x1"], i["x2"])],
+                    color="orange",
+                )
+        for i in self.__floads:
+            if i["x1"] == i["x2"]:
+                ax2[0].vlines(i["x1"], 0, i["x"], color="blue")
+                ax2[1].vlines(i["x1"], 0, i["y"], color="green")
+            else:
+                ax2[0].plot(
+                    np.linspace(i["x1"], i["x2"]),
+                    [i["x"].subs(self.__x, j) for j in np.linspace(i["x1"], i["x2"])],
+                    color="blue",
+                )
+                ax2[1].plot(
+                    np.linspace(i["x1"], i["x2"]),
+                    [i["y"].subs(self.__x, j) for j in np.linspace(i["x1"], i["x2"])],
+                    color="green",
+                )
+        return (fig1, fig2)
+
     def calculate(self) -> bool:
         """
         solve the beam
