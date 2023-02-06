@@ -164,6 +164,7 @@ class Beam(object):
             )
         )
         self.__v = -integrate(self.__fyw, self.__x)
+        # bending moment
         self.__Mz = integrate(
             self.__v
             - sum(
@@ -178,6 +179,7 @@ class Beam(object):
             ),
             self.__x,
         )
+        # torque
         self.__Mx = -integrate(
             sum(
                 [self.__MxN * SingularityFunction(self.__x, self.__xpin, -1)]
@@ -193,6 +195,11 @@ class Beam(object):
                 ]
             ),
             self.__x,
+        )
+        # tau_x_max stress
+        self.__taux = self.__Mx * (
+            1 / self.__C1W / self.__WT / self.__W**2
+            + 1 / self.__C1F / self.__FT / self.__F**2
         )
 
     # def torqe(self) -> ...:
@@ -267,14 +274,35 @@ class Beam(object):
 
     def torqe_plot(self):
         """
-        return fig of t(x)
+        return fig of T(x)
         """
         fig, ax = plt.subplots()
-        ax.set(title="TODO", ylabel=r"$\tau_{xy}$")
+        ax.set(title="Torque", ylabel=r"$M_{x}(x)$")
         ax.plot(
             np.linspace(0, self.__lenght * 0.99, 100),
             [
                 self.__Mx.subs(self.__x, i)
+                for i in np.linspace(0, self.__lenght * 0.99, 100)
+            ],
+        )
+        return fig
+
+    def tau_x_max(self):
+        """
+        return tau_x_max(x) in latex
+        """
+        return latex(self.__taux)
+
+    def tau_x_max_plot(self):
+        """
+        return fig of tau_x_max(x)
+        """
+        fig, ax = plt.subplots()
+        ax.set(title=r"$\tau_{x,max}$", ylabel=r"$\tau_{x,max}(x)$")
+        ax.plot(
+            np.linspace(0, self.__lenght * 0.99, 100),
+            [
+                self.__taux.subs(self.__x, i)
                 for i in np.linspace(0, self.__lenght * 0.99, 100)
             ],
         )
