@@ -33,6 +33,10 @@ class Beam(object):
         self.__xpin = xpin
         self.__xroller = xroller
 
+        self.__AREA = F * FT + W * WT
+        self.__C1W = 1 / 3 * (1 - 0.63 * W / WT)
+        self.__C1F = 1 / 3 * (1 - 0.63 * F / FT)
+
         self.__floads = []
         self.__mloads = []
 
@@ -98,7 +102,7 @@ class Beam(object):
                 for i in self.__floads
             ]
         )
-        self.__MN = -sum(
+        self.__MzN = -sum(
             [
                 (i["x1"] - self.__xpin) * i["y"]
                 if i["x1"] == i["x2"]
@@ -115,12 +119,18 @@ class Beam(object):
                 for i in self.__mloads
             ]
         )
+        self.__MxN = -sum(
+            i["x"]
+            if i["x1"] == i["x2"]
+            else integrate(i["x"], (self.__x, i["x1"], i["x2"]))
+            for i in self.__mloads
+        )
         if self.__xroller is not None:
-            self.__Ny2 = self.__MN / (self.__xroller - self.__xpin)
+            self.__Ny2 = self.__MzN / (self.__xroller - self.__xpin)
             self.__Ny1 = self.__Ny - self.__Ny2
 
     def __shears(self) -> None:
-        self.__w = sum(
+        self.__fyw = sum(
             [
                 -i["y"] * SingularityFunction(self.__x, i["x1"], -1)
                 if i["x1"] == i["x2"]
@@ -144,7 +154,7 @@ class Beam(object):
             + (
                 [
                     -self.__Ny * SingularityFunction(self.__x, self.__xpin, -1),
-                    self.__MN * SingularityFunction(self.__x, self.__xpin, -2),
+                    self.__MzN * SingularityFunction(self.__x, self.__xpin, -2),
                 ]
                 if self.__xroller is None
                 else [
@@ -153,12 +163,28 @@ class Beam(object):
                 ]
             )
         )
-        self.__v = -integrate(self.__w, self.__x)
+        self.__v = -integrate(self.__fyw, self.__x)
         self.__Mz = integrate(
             self.__v
             - sum(
                 [
                     i["z"]
+                    * (
+                        SingularityFunction(self.__x, i["x1"], 0)
+                        - SingularityFunction(self.__x, i["x2"], 0)
+                    )
+                    for i in self.__mloads
+                ]
+            ),
+            self.__x,
+        )
+        self.__Mx = -integrate(
+            sum(
+                [self.__MxN * SingularityFunction(self.__x, self.__xpin, -1)]
+                + [
+                    i["x"] * SingularityFunction(self.__x, i["x1"], -1)
+                    if i["x1"] == i["x2"]
+                    else i["x"]
                     * (
                         SingularityFunction(self.__x, i["x1"], 0)
                         - SingularityFunction(self.__x, i["x2"], 0)
@@ -191,14 +217,24 @@ class Beam(object):
         return reaction forces and moments
         """
         if self.__xroller is None:
-            return {"Nx": self.__Nx, "Ny": self.__Ny, "M": self.__MN}
-        return {"Nx_pin": self.__Nx, "Ny_pin": self.__Ny1, "N_roller": self.__Ny2}
+            return {
+                "Nx": self.__Nx,
+                "Ny": self.__Ny,
+                "Mz": self.__MzN,
+                "Mx": self.__MxN,
+            }
+        return {
+            "Nx_pin": self.__Nx,
+            "Ny_pin": self.__Ny1,
+            "N_roller": self.__Ny2,
+            "Mx": self.__MxN,
+        }
 
     def bending(self) -> dict:
         """
         return w(x), V(x), M(x) in latex
         """
-        return {"w": latex(self.__w), "V": latex(self.__v), "M": latex(self.__Mz)}
+        return {"w": latex(self.__fyw), "V": latex(self.__v), "M": latex(self.__Mz)}
 
     def bending_plot(self):
         """
@@ -218,6 +254,27 @@ class Beam(object):
             np.linspace(0, self.__lenght * 0.99, 100),
             [
                 self.__Mz.subs(self.__x, i)
+                for i in np.linspace(0, self.__lenght * 0.99, 100)
+            ],
+        )
+        return fig
+
+    def torque(self):
+        """
+        return M_x(x) in latex
+        """
+        return latex(self.__Mx)
+
+    def torqe_plot(self):
+        """
+        return fig of t(x)
+        """
+        fig, ax = plt.subplots()
+        ax.set(title="TODO", ylabel=r"$\tau_{xy}$")
+        ax.plot(
+            np.linspace(0, self.__lenght * 0.99, 100),
+            [
+                self.__Mx.subs(self.__x, i)
                 for i in np.linspace(0, self.__lenght * 0.99, 100)
             ],
         )
