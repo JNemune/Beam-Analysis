@@ -33,9 +33,20 @@ class Beam(object):
         self.__xpin = xpin
         self.__xroller = xroller
 
-        self.__AREA = F * FT + W * WT
+        self.__Area = W * WT + F * FT
         self.__C1W = 1 / 3 * (1 - 0.63 * W / WT)
         self.__C1F = 1 / 3 * (1 - 0.63 * F / FT)
+
+        self.__ycm = (W / 2 * W * WT + W * F * FT) / self.__Area
+        self.__ymax = -self.__ycm if self.__ycm > W / 2 else W - self.__ycm
+        self.__Izz = (
+            FT * F**3 / 12
+            + F * FT * (W - self.__ycm) ** 2
+            + W * WT**3 / 12
+            + W * WT * (W / 2 - self.__ycm)
+        )
+
+        # self.__Iyy=
 
         self.__floads = []
         self.__mloads = []
@@ -129,7 +140,25 @@ class Beam(object):
             self.__Ny2 = self.__MzN / (self.__xroller - self.__xpin)
             self.__Ny1 = self.__Ny - self.__Ny2
 
-    def __shears(self) -> None:
+    def __Mechanical_analaysis(self) -> None:
+        # fxw
+        self.__fxw = -integrate(
+            sum(
+                [self.__Nx * SingularityFunction(self.__x, self.__xpin, -1)]
+                + [
+                    i["x"] * SingularityFunction(self.__x, i["x1"], -1)
+                    if i["x1"] == i["x2"]
+                    else i["x"]
+                    * (
+                        SingularityFunction(self.__x, i["x1"], 0)
+                        - SingularityFunction(self.__x, i["x2"], 0)
+                    )
+                    for i in self.__floads
+                ]
+            ),
+            self.__x,
+        )
+        # fyw
         self.__fyw = sum(
             [
                 -i["y"] * SingularityFunction(self.__x, i["x1"], -1)
@@ -163,6 +192,7 @@ class Beam(object):
                 ]
             )
         )
+        # shear force
         self.__v = -integrate(self.__fyw, self.__x)
         # bending moment
         self.__Mz = integrate(
@@ -201,6 +231,8 @@ class Beam(object):
             1 / self.__C1W / self.__WT / self.__W**2
             + 1 / self.__C1F / self.__FT / self.__F**2
         )
+        # normal stress
+        self.__sigma = self.__fxw / self.__Area - self.__Mz * self.__ymax / self.__Izz
 
     # def torqe(self) -> ...:
     #     ...
@@ -216,7 +248,7 @@ class Beam(object):
         solve the beam
         """
         self.__statical_analysis()
-        self.__shears()
+        self.__Mechanical_analaysis()
         return True
 
     def reactions(self) -> dict:
@@ -303,6 +335,27 @@ class Beam(object):
             np.linspace(0, self.__lenght * 0.99, 100),
             [
                 self.__taux.subs(self.__x, i)
+                for i in np.linspace(0, self.__lenght * 0.99, 100)
+            ],
+        )
+        return fig
+
+    def normal_stress_max(self):
+        """
+        return max sigma(x) in latex
+        """
+        return latex(self.__sigma)
+
+    def normal_stress_max_plot(self):
+        """
+        return fig of max sigma(x)
+        """
+        fig, ax = plt.subplots()
+        ax.set(title=r"$\sigma_{x,max}$", ylabel=r"$\sigma_{x,max}(x)$")
+        ax.plot(
+            np.linspace(0, self.__lenght * 0.99, 100),
+            [
+                self.__sigma.subs(self.__x, i)
                 for i in np.linspace(0, self.__lenght * 0.99, 100)
             ],
         )
