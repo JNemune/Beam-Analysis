@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Home</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{% static 'home/proj2.css' %}" />
+  </head>
+  <body>
+    <header>
+      <div class="header">
+        <img src= {% static 'home/university-of-tehran.png' %}>
+        <h1>BEAM ANALYSER</h1>
+        <img src={% static 'home/fani-logo.png' %}>
+      </div>
+    </header>
+
+    <aside>
+      <div class="sidebar">
+        <br />
+        <!-- <h2>Enter Data</h2> -->
+
+        <h3>Model</h3>
+        <a href="{% url 'beam' %}">
+          <button class="model" type="button" value="beam" name="">Beam</button>
+        </a>
+        <a href="{% url 'supports' %}">
+          <button class="model" type="button" value="supports" name="">
+            Support
+          </button>
+        </a>
+
+        <h3>Loads</h3>
+        <a href="{% url 'forces' %}">
+          <button class="loads" type="button" value="forces" name="">
+            Forces
+          </button>
+        </a>
+        <a href="{% url 'moments' %}">
+          <button class="loads" type="button" value="moments" name="">
+            Moments
+          </button>
+        </a>
+
+        <h3>Plots</h3>
+        <a href="{% url 'results' %}">
+          <button class="result" type="button" value="results" name="">
+            Calculate
+          </button>
+        </a>
+      </div>
+    </aside>
+
+    {% if result != 1 %}
+    <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque hic
+      pariatur expedita, eligendi dolore ratione qui distinctio! Repudiandae eos
+      repellendus odit consequatur, et debitis velit eligendi voluptatum nostrum
+      ducimus! Ex incidunt ullam tenetur rerum quaerat quia blanditiis. Odio
+      commodi accusantium a unde non vero quam, eos fugit ipsum necessitatibus,
+      sed mollitia delectus sit repellendus impedit culpa? Officia officiis
+      exercitationem similique corporis molestiae perferendis, odio nesciunt
+      labore tempore quod. Illum inventore ex natus temporibus, possimus ipsam
+      laboriosam quas fuga, debitis minus iste excepturi deleniti eligendi velit
+      at numquam aliquam itaque provident quaerat maxime obcaecati quis ducimus
+      recusandae repudiandae.
+    </p>
+    {% else %}
+    <h2 id="result"> Results: </h3>
+    {% endif %}
+
+    <div class="container">
+      <div id="beam"></div>
+    </div>
+
+    {% if result %}
+    <div class="results">
+      <h4>Reaction Forces:</h4>
+      <ul>
+        {% for keys, values in info.items %}
+        <li><b>{{ keys }} </b> = {{ values|floatformat:'-4' }} kN</li>
+        {% endfor %}
+      </ul>
+
+      <br />
+      <h4>Loads alongside the Beam as Functions of x:</h4>
+      <img src="{% static 'home/latex.png' %}" alt="" class="res" id="latex" />
+
+      <br />
+      <h4>Plots:</h4>
+      <img src="{% static 'home/plt.png' %}" alt="" class="res" />
+      <img src="{% static 'home/sigma.png' %}" alt="" class="res" />
+      <img src="{% static 'home/torque.png' %}" alt="" class="res" />
+      <img src="{% static 'home/tau_x.png' %}" alt="" class="res" />
+    </div>
+    {% else %}
+    <pre>
+      Help on class Beam in module Beam:
+      class Beam(builtins.object)
+      |  Beam(lenght: float, F: float, W: float, FT: float, WT: float, xpin: float = 0.0, xroller: float | None = None) -> None |
+      |  Methods defined here:
+      |
+      |  __init__(self, lenght: float, F: float, W: float, FT: float, WT: float, xpin: float = 0.0, xroller: float | None = None) -> None
+      |      Analysis of pin-roller and cantilever beams.
+      |
+      |      Args:
+      |          lenght, F, W, FT, FW are the geometric sections of the beam.
+      |
+      |          If xroller is None, the beam is a cantilever, otherwise use xpin and xroller to specify pin and roller coordinates.
+      |
+      |  bending(self) -> dict
+      |      return w(x), V(x), M(x) in latex
+      |
+      |  bending_plot(self)
+      |      return plt of V(x) and M(x)
+      |
+      |  calculate(self) -> bool
+      |      solve the beam
+      |
+      |  floading(self, x: str, y: str, x1: float, x2: float | None = None) -> None
+      |      F = Fx(x) î + Fy(x) \u0135, [x1, x2]
+      |
+      |      if x2 is None it is point loading.
+      |
+      |  mloading(self, x: str, z: str, x1: float, x2: float | None = None) -> None
+      |      M = Mx(x) î + Mz(x) k\u0302, [x1, x2]
+      |
+      |      if x2 is None it is point loading.
+      |
+      |  reactions(self) -> dict
+      |      return reaction forces and moments
+      |
+      |  ----------------------------------------------------------------------
+    </pre>
+    {% endif %}
+  </body>
+</html>

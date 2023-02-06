@@ -1,0 +1,17 @@
+.back{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 70px;
+    height: 45px;
+    padding-right: 10px;
+    color: black;
+    background-color: lightslategrey;
+    border: 2px solid wheat;
+    border-radius: 15px;
+    vertical-align: middle;
+    /*margin-bottom: 1%;*/
+}
+span{
+    font-size: 17px;
+}

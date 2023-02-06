@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Beam</title>
+    <link rel="stylesheet" href="{% static 'model/beam.css' %}" />
+    <link rel="stylesheet" href="{% static 'model/font-awesome.css' %" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <div>
+      <h3>Beam Length:</h3>
+      <form action="/form/" method="post">
+        {% csrf_token %}
+
+        <input type="number" placeholder="Length" name="len" step="any" />
+        <select name="unit1" id="">
+          <option value="M" selected>m</option>
+          <option value="MM">mm</option>
+          <option value="IN">in</option>
+          <option value="FT">ft</option>
+        </select>
+        <br />
+        <br />
+        <!-- <button class="save" name="save">save <i class="fa">&#xf00c;</i></button> -->
+
+        <div class="section">
+          <h3>Cross Section Info:</h3>
+
+          <table>
+            <tr>
+              <td><label for="F">F:</label></td>
+              <td>
+                <input type="number" placeholder="Flange" name="F" step="any" />
+              </td>
+              <td><label for="FT">FT:</label></td>
+              <td>
+                <input
+                  type="number"
+                  placeholder="Flange Thickness"
+                  name="FT"
+                  step="any"
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td><label for="W">W:</label></td>
+              <td>
+                <input type="number" placeholder="Web" name="W" step="any" />
+              </td>
+              <td><label for="WT">WT:</label></td>
+              <td>
+                <input
+                  type="number"
+                  placeholder="Web Thickness"
+                  name="WT"
+                  step="any"
+                />
+              </td>
+            </tr>
+
+            <tr>
+              <td></td>
+              <td>
+                <select name="unit2" id="">
+                  <option value="M" selected>m</option>
+                  <option value="MM">mm</option>
+                  <option value="IN">in</option>
+                  <option value="FT">ft</option>
+                </select>
+              </td>
+              <td></td>
+              <td>
+                <!-- <button class="save">save <i class="fa">&#xf00c;</i></button> -->
+                <!-- <input type="submit" value="save" name="sub"> -->
+                <button type="submit" class="save">
+                  save <i class="fa">&#xf00c;</i>
+                </button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </form>
+    </div>
+
+    <!-- <div class="section_img">
+      <div class="flange"></div>
+      <div class="web"></div>
+    </div> -->
+
+    <img src="{% static 'model/cross_section.jpg' %}" alt="">
+  </body>
+</html>

@@ -1,0 +1,95 @@
+input,
+select {
+  background-color: rgb(187, 231, 231);
+  padding: 10px 15px;
+  border: none;
+  border-bottom: 2px solid blue;
+  border-radius: 7px;
+}
+
+/* hide input arrows: */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+select {
+  padding: 4px 0 8px 15px;
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+input[type="number"]{
+    width: 80px;
+}
+
+input:focus {
+  padding: 8px 15px;
+  /* border:; */
+  outline: none;
+  border-bottom: 4px solid blue;
+}
+
+.save {
+  /* margin: 5px 0; */
+  background-color: greenyellow;
+  border: none;
+  border-bottom: 3px solid rgb(100, 184, 100);
+  border-radius: 12px;
+  padding: 11px 12px;
+  font-size: 15px;
+  font-weight: bolder;
+}
+
+.save:hover {
+  color: blue;
+}
+
+.save:active {
+  border-bottom: 3px solid greenyellow;
+}
+
+h1{
+  padding-bottom: 2px;
+  margin-bottom: 0cm;
+}
+
+h2{
+  color: rgba(0, 0, 0, 0.514);
+  padding-top: 2px;
+  margin-top: 0;
+  margin-bottom: 45px;
+}
+
+h3{
+  margin-top: 40px;
+  margin-bottom: 11px;
+}
+
+a.delete{
+  text-decoration: none;
+  color: white;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  padding-top: 10px;
+  width: 200px;
+  height: 31px;
+  /* border: 1px solid red; */
+  border-radius: 10px;
+  background-color: #ff4100;
+}
+
+#del-m{
+  padding-top: 14px;
+  height: 50px;
+}
+
+a.delete:hover{
+  background-color: #bb2f00;
+}
+
+i.fa-trash{
+  margin-right: 7px;
+}

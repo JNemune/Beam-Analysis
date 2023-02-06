@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>support</title>
+    <link rel="stylesheet" href="{% static 'model/beam.css' %}" />
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <div class="support">
+      <h3>Choose Support Type:</h3>
+
+      <form action="/support/" method="post">
+      {% csrf_token %}
+      <select name="type" id="">
+        <option value="Can" selected>Cantilevered</option>
+        <option value="PR">Pin-Roller</option>
+      </select>
+      <button type="submit" class="save">
+        save <i class="fa">&#xf00c;</i>
+      </button>
+      </form>
+
+      {% if type == None %}
+      <br>
+      {% elif type == 'Can'%}
+
+      <form action="/cantilevered/" method="post">
+      {% csrf_token %}
+      <input type="number" placeholder="position" name="Can" step="any"/>
+      <select name="unit" id="">
+        <option value="M" selected>m</option>
+        <option value="MM">mm</option>
+        <option value="IN">in</option>
+        <option value="FT">ft</option>
+      </select>
+      <button type="submit" class="save">
+        save <i class="fa">&#xf00c;</i>
+      </button>
+      </form>
+
+      {% else %}
+      <br />
+      <br />
+      <form action="/pinroller/" method="post">
+      {% csrf_token %}
+      <table>
+        <tr>
+          <td><label for="P">Pin:</label></td>
+          <td><input type="number" placeholder="position" name="Pin" step="any"/></td>
+          <td>
+              <select name="unit_a" id="">
+                  <option value="M" selected>m</option>
+                  <option value="MM">mm</option>
+                  <option value="IN">in</option>
+                  <option value="FT">ft</option>
+                </select>
+            </td>
+            <td>
+                <object data="{% static 'model/pin.svg' %}" type=""></object>
+            </td>
+        </tr>
+
+        <tr>
+          <td><label for="R">Roller:</label></td>
+          <td><input type="number" placeholder="position" name="Rol" step="any" /></td>
+          <td>
+            <select name="unit_b" id="">
+              <option value="M" selected>m</option>
+              <option value="MM">mm</option>
+              <option value="IN">in</option>
+              <option value="FT">ft</option>
+            </select>
+          </td>
+          <td>
+              <object data="{% static 'model/roller.svg' %}" type=""></object>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>
+            <button type="submit" class="save">
+              save <i class="fa">&#xf00c;</i>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+      {% endif %}
+    </div>
+  </body>
+</html>
