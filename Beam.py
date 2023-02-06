@@ -37,16 +37,21 @@ class Beam(object):
         self.__C1W = 1 / 3 * (1 - 0.63 * W / WT)
         self.__C1F = 1 / 3 * (1 - 0.63 * F / FT)
 
-        self.__ycm = (W / 2 * W * WT + W * F * FT) / self.__Area
-        self.__ymax = -self.__ycm if self.__ycm > W / 2 else W - self.__ycm
+        self.__ybar = (W / 2 * W * WT + W * F * FT) / self.__Area
+        self.__ymax = -self.__ybar if self.__ybar > W / 2 else W - self.__ybar
         self.__Izz = (
             FT * F**3 / 12
-            + F * FT * (W - self.__ycm) ** 2
+            + F * FT * (W - self.__ybar) ** 2
             + W * WT**3 / 12
-            + W * WT * (W / 2 - self.__ycm)
+            + W * WT * (W / 2 - self.__ybar)
         )
 
-        # self.__Iyy=
+        self.__Iyy = (
+            F * FT**3 / 12
+            + F * FT * (W - self.__ybar) ** 2
+            + WT * W**3 / 12
+            + W * WT * (W / 2 - self.__ybar)
+        )
 
         self.__floads = []
         self.__mloads = []
@@ -226,22 +231,17 @@ class Beam(object):
             ),
             self.__x,
         )
-        # tau_x_max stress
-        self.__taux = self.__Mx * (
+        # tau_y_max stress
+        self.__tauy = self.__Mx * (
             1 / self.__C1W / self.__WT / self.__W**2
             + 1 / self.__C1F / self.__FT / self.__F**2
         )
         # normal stress
         self.__sigma = self.__fxw / self.__Area - self.__Mz * self.__ymax / self.__Izz
-
-    # def torqe(self) -> ...:
-    #     ...
-
-    # def normal_stress(self) -> ...:
-    #     ...
-
-    # def shear_stress(self) -> ...:
-    #     ...
+        # tau_xy_max stress
+        self.__tauxy = (
+            self.__v * self.__WT * self.__ybar**2 / 2 / self.__Iyy / self.__WT
+        )
 
     def calculate(self) -> bool:
         """
@@ -319,22 +319,22 @@ class Beam(object):
         )
         return fig
 
-    def tau_x_max(self):
+    def tau_y_max(self):
         """
-        return tau_x_max(x) in latex
+        return tau_y_max(x) in latex
         """
-        return latex(self.__taux)
+        return latex(self.__tauy)
 
-    def tau_x_max_plot(self):
+    def tau_y_max_plot(self):
         """
-        return fig of tau_x_max(x)
+        return fig of tau_y_max(x)
         """
         fig, ax = plt.subplots()
-        ax.set(title=r"$\tau_{x,max}$", ylabel=r"$\tau_{x,max}(x)$")
+        ax.set(title=r"$\tau_{y,max}$", ylabel=r"$\tau_{y,max}(x)$")
         ax.plot(
             np.linspace(0, self.__lenght * 0.99, 100),
             [
-                self.__taux.subs(self.__x, i)
+                self.__tauy.subs(self.__x, i)
                 for i in np.linspace(0, self.__lenght * 0.99, 100)
             ],
         )
@@ -356,6 +356,27 @@ class Beam(object):
             np.linspace(0, self.__lenght * 0.99, 100),
             [
                 self.__sigma.subs(self.__x, i)
+                for i in np.linspace(0, self.__lenght * 0.99, 100)
+            ],
+        )
+        return fig
+
+    def tau_xy_max(self):
+        """
+        return tau_xy_max(x) in latex
+        """
+        return latex(self.__tauxy)
+
+    def tau_xy_max_plot(self):
+        """
+        return fig of tau_xy_max(x)
+        """
+        fig, ax = plt.subplots()
+        ax.set(title=r"$\tau_{xy,max}$", ylabel=r"$\tau_{xy,max}(x)$")
+        ax.plot(
+            np.linspace(0, self.__lenght * 0.99, 100),
+            [
+                self.__tauxy.subs(self.__x, i)
                 for i in np.linspace(0, self.__lenght * 0.99, 100)
             ],
         )
