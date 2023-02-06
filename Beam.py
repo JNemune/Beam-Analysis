@@ -286,6 +286,17 @@ class Beam(object):
                 )
         return (fig1, fig2)
 
+    def beam_geom(self):
+        """
+        return beam geometry parameters
+        """
+        return {
+            "Izz": latex(self.__Izz),
+            "Iyy": latex(self.__Iyy),
+            "ybar": latex(self.__ybar),
+            "ymax": latex(self.__ymax),
+        }
+
     def calculate(self) -> bool:
         """
         solve the beam
