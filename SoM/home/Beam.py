@@ -37,16 +37,21 @@ class Beam(object):
         self.__C1W = 1 / 3 * (1 - 0.63 * W / WT)
         self.__C1F = 1 / 3 * (1 - 0.63 * F / FT)
 
-        self.__ycm = (W / 2 * W * WT + W * F * FT) / self.__Area
-        self.__ymax = -self.__ycm if self.__ycm > W / 2 else W - self.__ycm
+        self.__ybar = (W / 2 * W * WT + W * F * FT) / self.__Area
+        self.__ymax = -self.__ybar if self.__ybar > W / 2 else W - self.__ybar
         self.__Izz = (
             FT * F**3 / 12
-            + F * FT * (W - self.__ycm) ** 2
+            + F * FT * (W - self.__ybar) ** 2
             + W * WT**3 / 12
-            + W * WT * (W / 2 - self.__ycm)
+            + W * WT * (W / 2 - self.__ybar)
         )
 
-        # self.__Iyy=
+        self.__Iyy = (
+            F * FT**3 / 12
+            + F * FT * (W - self.__ybar) ** 2
+            + WT * W**3 / 12
+            + W * WT * (W / 2 - self.__ybar)
+        )
 
         self.__floads = []
         self.__mloads = []
@@ -226,22 +231,71 @@ class Beam(object):
             ),
             self.__x,
         )
-        # tau_x_max stress
-        self.__taux = self.__Mx * (
+        # tau_y_max stress
+        self.__tauy = self.__Mx * (
             1 / self.__C1W / self.__WT / self.__W**2
             + 1 / self.__C1F / self.__FT / self.__F**2
         )
         # normal stress
         self.__sigma = self.__fxw / self.__Area - self.__Mz * self.__ymax / self.__Izz
+        # tau_xy_max stress
+        self.__tauxy = (
+            self.__v * self.__WT * self.__ybar**2 / 2 / self.__Iyy / self.__WT
+        )
 
-    # def torqe(self) -> ...:
-    #     ...
+    def loadings(self):
+        """
+        return all loading entries in plot
+        """
+        fig1, ax1 = plt.subplots(2, 1)
+        fig2, ax2 = plt.subplots(2, 1)
 
-    # def normal_stress(self) -> ...:
-    #     ...
+        ax1[0].set(title="Moment Loadings", ylabel=r"$M_{x}$")
+        ax1[1].set(xlabel=r"$x$", ylabel=r"$M_{z}$")
+        ax2[0].set(title="Force Loadings", ylabel=r"$F_{x}$")
+        ax2[1].set(xlabel=r"$x$", ylabel=r"$F_{y}$")
+        for i in self.__mloads:
+            if i["x1"] == i["x2"]:
+                ax1[0].vlines(i["x1"], 0, i["x"], color="red")
+                ax1[1].vlines(i["x1"], 0, i["z"], color="orange")
+            else:
+                ax1[0].plot(
+                    np.linspace(i["x1"], i["x2"]),
+                    [i["x"].subs(self.__x, j) for j in np.linspace(i["x1"], i["x2"])],
+                    color="red",
+                )
+                ax1[1].plot(
+                    np.linspace(i["x1"], i["x2"]),
+                    [i["z"].subs(self.__x, j) for j in np.linspace(i["x1"], i["x2"])],
+                    color="orange",
+                )
+        for i in self.__floads:
+            if i["x1"] == i["x2"]:
+                ax2[0].vlines(i["x1"], 0, i["x"], color="blue")
+                ax2[1].vlines(i["x1"], 0, i["y"], color="green")
+            else:
+                ax2[0].plot(
+                    np.linspace(i["x1"], i["x2"]),
+                    [i["x"].subs(self.__x, j) for j in np.linspace(i["x1"], i["x2"])],
+                    color="blue",
+                )
+                ax2[1].plot(
+                    np.linspace(i["x1"], i["x2"]),
+                    [i["y"].subs(self.__x, j) for j in np.linspace(i["x1"], i["x2"])],
+                    color="green",
+                )
+        return (fig1, fig2)
 
-    # def shear_stress(self) -> ...:
-    #     ...
+    def beam_geom(self):
+        """
+        return beam geometry parameters
+        """
+        return {
+            "Izz": latex(self.__Izz),
+            "Iyy": latex(self.__Iyy),
+            "ybar": latex(self.__ybar),
+            "ymax": latex(self.__ymax),
+        }
 
     def calculate(self) -> bool:
         """
@@ -265,8 +319,8 @@ class Beam(object):
         return {
             "Fx_pin": self.__Nx,
             "Fy_pin": self.__Ny1,
-            "Mx_pin": self.__MxN,
             "F_roller": self.__Ny2,
+            "Mx_pin": self.__MxN,
         }
 
     def bending(self) -> dict:
@@ -304,7 +358,7 @@ class Beam(object):
         """
         return latex(self.__Mx)
 
-    def torqe_plot(self):
+    def torque_plot(self):
         """
         return fig of T(x)
         """
@@ -319,22 +373,22 @@ class Beam(object):
         )
         return fig
 
-    def tau_x_max(self):
+    def tau_y_max(self):
         """
-        return tau_x_max(x) in latex
+        return tau_y_max(x) in latex
         """
-        return latex(self.__taux)
+        return latex(self.__tauy)
 
-    def tau_x_max_plot(self):
+    def tau_y_max_plot(self):
         """
-        return fig of tau_x_max(x)
+        return fig of tau_y_max(x)
         """
         fig, ax = plt.subplots()
-        ax.set(title=r"$\tau_{x,max}$", ylabel=r"$\tau_{x,max}(x)$")
+        ax.set(title=r"$\tau_{y,max}$", ylabel=r"$\tau_{y,max}(x)$")
         ax.plot(
             np.linspace(0, self.__lenght * 0.99, 100),
             [
-                self.__taux.subs(self.__x, i)
+                self.__tauy.subs(self.__x, i)
                 for i in np.linspace(0, self.__lenght * 0.99, 100)
             ],
         )
@@ -356,6 +410,27 @@ class Beam(object):
             np.linspace(0, self.__lenght * 0.99, 100),
             [
                 self.__sigma.subs(self.__x, i)
+                for i in np.linspace(0, self.__lenght * 0.99, 100)
+            ],
+        )
+        return fig
+
+    def tau_xy_max(self):
+        """
+        return tau_xy_max(x) in latex
+        """
+        return latex(self.__tauxy)
+
+    def tau_xy_max_plot(self):
+        """
+        return fig of tau_xy_max(x)
+        """
+        fig, ax = plt.subplots()
+        ax.set(title=r"$\tau_{xy,max}$", ylabel=r"$\tau_{xy,max}(x)$")
+        ax.plot(
+            np.linspace(0, self.__lenght * 0.99, 100),
+            [
+                self.__tauxy.subs(self.__x, i)
                 for i in np.linspace(0, self.__lenght * 0.99, 100)
             ],
         )

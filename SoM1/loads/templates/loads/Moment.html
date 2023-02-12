@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Moment</title>
+    <link rel="stylesheet" href="{% static 'loads/Load.css' %}" />
+    <!-- <link rel="stylesheet" href="../../static/loads/Load.css" /> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <form action="/mloading/" method="post">
+      {% csrf_token %}
+      <h1>Add Momentums:</h1>
+        <h2>[Torsional Torque or Bending Moment]</h2>
+      <div class="xmoment">
+        <h3>Torque alongside x-axis, as a Function of x:</h3>
+        <input type="text" placeholder="math string" name="xMag" />
+        <select name="xunit" id="">
+          <option value="kN" selected>kN</option>
+          <option value="kips">kips</option>
+        </select>
+      </div>
+
+      <div class="zmoment">
+        <h3>Bending Moment alongside z-axis, as a Function of x:</h3>
+        <input type="text" placeholder="math string" name="zMag" />
+        <select name="zunit" id="">
+          <option value="kN" selected>kN</option>
+          <option value="kips">kips</option>
+        </select>
+      </div>
+
+      <h3>Start and Stop coordinate (x):</h3>
+      <input type="number" name="Start" placeholder="x start" step="any" />
+      <input type="number" name="Stop" placeholder="x stop" step="any" />
+      <select name="start_stop" id="">
+        <option value="M" selected>m</option>
+        <option value="MM">mm</option>
+        <option value="IN">in</option>
+        <option value="FT">ft</option>
+      </select>
+
+      <button type="submit" class="save">add <i class="fa">&#xf0fe;</i></button>
+      <br>
+      <br>
+      <a href="/M_delete/" id="del-m" class="delete"><i class="fa fa-trash"></i>Delete all recent Momentums!</a>
+    </form>
+  </body>
+</html>

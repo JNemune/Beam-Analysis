@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>back</title>
+    <link rel="stylesheet" href="{% static 'home/back.css' %}">
+    <link rel="stylesheet" href="font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+
+    {% block back %}
+  <div>
+      <button class="back" type="button">
+          <i class="material-icons" style="font-size: 20px;">arrow_back</i> <span>Back</span>
+      </button>
+  </div>
+    {% endblock %}
+
+</body>
+</html>

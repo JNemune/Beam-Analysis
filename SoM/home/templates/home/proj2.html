@@ -24,7 +24,6 @@
     <aside>
       <div class="sidebar">
         <br />
-        <!-- <h2>Enter Data</h2> -->
 
         <h3>Model</h3>
         <a href="{% url 'beam' %}">
@@ -75,9 +74,15 @@
     <h2 id="result"> Results: </h3>
     {% endif %}
 
+    {% if result %}
+    <img src="{% static 'home/loads1.png' %}" alt="" class="res" />
+    {% endif %}
     <div class="container">
       <div id="beam"></div>
     </div>
+    {% if result %}
+    <img src="{% static 'home/loads2.png' %}" alt="" class="res" />
+    {% endif %}
 
     {% if result %}
     <div class="results">
@@ -89,15 +94,16 @@
       </ul>
 
       <br />
-      <h4>Loads alongside the Beam as Functions of x:</h4>
+      <h4>All Variables along the Beam as Functions of x:</h4>
       <img src="{% static 'home/latex.png' %}" alt="" class="res" id="latex" />
 
       <br />
       <h4>Plots:</h4>
       <img src="{% static 'home/plt.png' %}" alt="" class="res" />
       <img src="{% static 'home/sigma.png' %}" alt="" class="res" />
+      <img src="{% static 'home/tau_y.png' %}" alt="" class="res" />
+      <img src="{% static 'home/tau_xy.png' %}" alt="" class="res" />
       <img src="{% static 'home/torque.png' %}" alt="" class="res" />
-      <img src="{% static 'home/tau_x.png' %}" alt="" class="res" />
     </div>
     {% else %}
     <pre>

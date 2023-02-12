@@ -5,14 +5,19 @@ import sys
 # from information import w, v, m
 
 class tex_plot(object):
-    def __init__(self, w, v, m, sigma_max, torque, tau_x_max) -> None:
+    def __init__(self, w, v, m, sigma_max, tau_y_max, tau_xy_max, torque, ybar, ymax, Iyy, Izz) -> None:
         mathtext_demos = {
             "W(x)": rf'${w}$',
             "V(x)": rf'${v}$',
             "M(x)": rf'${m}$',
             "$\sigma_{max}(x)$": rf'${sigma_max}$',
+            r"$\tau_{y,max}(x)$": rf'${tau_y_max}$',
+            r"$\tau_{xy,max}(x)$": rf'${tau_xy_max}$',
             "T(x)": rf'${torque}$',
-            r"$\tau_{x,max}(x)$": rf'${tau_x_max}$',
+            "$y_{bar}$": rf'${ybar}$',
+            "$y_{max}$": rf'${ymax}$',
+            "$I_{yy}$": rf'${Iyy}$',
+            "$I_{zz}$": rf'${Izz}$'
         }
         
         n_lines = len(mathtext_demos)
@@ -23,7 +28,7 @@ class tex_plot(object):
             mpl_grey_rgb = (51 / 255, 51 / 255, 51 / 255)
 
             # Creating figure and axis.
-            fig = plt.figure(figsize=(23,12))
+            fig = plt.figure(figsize=(23,16))
             ax = fig.add_axes([0.01, 0.01, 0.98, 0.90],
                             facecolor="white", frameon=True)
             ax.set_xlim(0, 1)
@@ -49,7 +54,7 @@ class tex_plot(object):
                             xy=(0.04, baseline - 0.75 * line_axesfrac),
                             color=mpl_grey_rgb, fontsize=18)
 
-            plt.savefig('C:/Users/Mohammad/Desktop/VSC/SoM/home/static/home/latex.png')
+            plt.savefig('/var/www/html/static/latex.png')
             # plt.show()
 
         doall()

@@ -1,0 +1,70 @@
+{% extends "model/Beam.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>section</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static 'model/beam.css' %}" />
+    <!-- <link
+      rel="stylesheet"
+      href="font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.css"
+    /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    {% block section %}
+
+
+
+
+    <div class="section">
+      <h3>Cross Section Info:</h3>
+
+
+      <table>
+        <tr>
+          <td><label for="F">F:</label></td>
+          <td><input type="number" placeholder="Flange" name="F" /></td>
+          <td><label for="FT">FT:</label></td>
+          <td>
+            <input type="number" placeholder="Flange Thickness" name="FT" />
+          </td>
+        </tr>
+
+        <tr>
+          <td><label for="W">W:</label></td>
+          <td><input type="number" placeholder="Web" name="W" /></td>
+          <td><label for="WT">WT:</label></td>
+          <td><input type="number" placeholder="Web Thickness" name="WT" /></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td>
+            <select name="unit2" id="">
+              <option value="M" selected>m</option>
+              <option value="MM">mm</option>
+              <option value="IN">in</option>
+              <option value="FT">ft</option>
+            </select>
+          </td>
+          <td></td>
+          <td>
+            <button class="save">save <i class="fa">&#xf00c;</i></button>
+          </td>
+        </tr>
+      </table>
+
+
+
+    </div>
+
+
+
+
+    {% endblock section %}
+  </body>
+</html>

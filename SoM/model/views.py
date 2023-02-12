@@ -7,45 +7,45 @@ from .models import BeamModel, SupportModel
 def beam_creator(request):
     if request.method == 'POST':
         cd = request.POST
-
-        len=cd['len']
+	
+        length= float(cd['len'])
         unit_1=cd['unit1']
-        f = cd['F']
-        ft = cd['FT']
-        w = cd['W']
-        wt = cd['WT']
+        F = float(cd['F'])
+        FT = float(cd['FT'])
+        W = float(cd['W'])
+        WT = float(cd['WT'])
         unit_2=cd['unit2']
 
         if unit_1 == 'MM':
-            len = len/1000
+            length = length/1000
         elif unit_1 == 'IN':
-            len = len*2.54/100
+            length = length*2.54/100
         elif unit_1 == 'FT':
-            len = len/3.281
+            length = length/3.281
 
         if unit_2 == 'MM':
-            f = f/1000
-            ft = ft/1000
-            w = w/1000
-            wt = wt/1000
+            F = F/1000
+            FT = FT/1000
+            W = W/1000
+            WT = WT/1000
         elif unit_2 == 'IN':
-            f = f*2.54/100
-            ft = ft*2.54/100
-            w = w*2.54/100
-            wt = wt*2.54/100
+            F = F*2.54/100
+            FT = FT*2.54/100
+            W = W*2.54/100
+            WT = WT*2.54/100
         elif unit_2 == 'FT':
-            f = f/3.281
-            ft = ft/3.281
-            w = w/3.281
-            wt = wt/3.281
+            F = F/3.281
+            FT = FT/3.281
+            W = W/3.281
+            WT = WT/3.281
 
         BeamModel.objects.create(
-                len=cd['len'],
+                len=length,
                 unit_1=cd['unit1'],
-                f = cd['F'],
-                ft = cd['FT'],
-                w = cd['W'],
-                wt = cd['WT'],
+                f = F,
+                ft = FT,
+                w = W,
+                wt = WT,
                 unit_2=cd['unit2']
         )
     return redirect('beam')
